@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'transactions',
     'accounts',
+    "corsheaders",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -56,10 +59,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+
 ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'config.urls'
-
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME":timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME":timedelta(days=7),
+}
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -77,7 +89,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
