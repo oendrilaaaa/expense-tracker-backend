@@ -36,52 +36,52 @@ class AuthView(APIView):
         else:
             return Response({"message":"OTP invalid/expired"},status=401)
 
-class LoginView(APIView):
-    def validate_mobile(mobile):
-        if mobile.isdigit() and len(mobile)==10:
-            return True
-        else:
-            return False
+# class LoginView(APIView):
+#     def validate_mobile(mobile):
+#         if mobile.isdigit() and len(mobile)==10:
+#             return True
+#         else:
+#             return False
 
 
-    def get_tokens_for_user(user):
-        refresh = RefreshToken.for_user(user)
+#     def get_tokens_for_user(user):
+#         refresh = RefreshToken.for_user(user)
 
-        return {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        }
+#         return {
+#             "refresh": str(refresh),
+#             "access": str(refresh.access_token),
+#         }
 
-    def login_api(request):
-        if request.method == 'POST':
-            payload = request.data
-            mobile = payload.get('mobile')
-            otp = payload.get('otp')
+#     def login_api(request):
+#         if request.method == 'POST':
+#             payload = request.data
+#             mobile = payload.get('mobile')
+#             otp = payload.get('otp')
 
-            # validating provided mobile
-            if not validate_mobile(mobile=mobile):
-                return Response({"error":"provide a valid mobile number"}, status=400)
+#             # validating provided mobile
+#             if not validate_mobile(mobile=mobile):
+#                 return Response({"error":"provide a valid mobile number"}, status=400)
 
-            # check if this mobile number exist in user table or not 
-            found_user = User.objects.filter(username=mobile).first()
-            if found_user:
-                # check otp is valid or not
-                is_otp_valid = str(cache.get(f"otp_{mobile}")) == str(otp)
-                if is_otp_valid:
-                    return Response({
-                        "username": found_user.username,
-                        "first_name": found_user.first_name,
-                        "last_name": found_user.last_name,
-                        "email": found_user.email,
-                        "tokens": get_tokens_for_user(found_user),
-                    })
-                else:
-                    return Response({"error":"provide a valid mobile number"}, status=400)
-            else:
-                #throw error account doesnt exist
-                return Response({"error":"account not found"}, status=400)
+#             # check if this mobile number exist in user table or not 
+#             found_user = User.objects.filter(username=mobile).first()
+#             if found_user:
+#                 # check otp is valid or not
+#                 is_otp_valid = str(cache.get(f"otp_{mobile}")) == str(otp)
+#                 if is_otp_valid:
+#                     return Response({
+#                         "username": found_user.username,
+#                         "first_name": found_user.first_name,
+#                         "last_name": found_user.last_name,
+#                         "email": found_user.email,
+#                         "tokens": get_tokens_for_user(found_user),
+#                     })
+#                 else:
+#                     return Response({"error":"provide a valid mobile number"}, status=400)
+#             else:
+#                 #throw error account doesnt exist
+#                 return Response({"error":"account not found"}, status=400)
 
-        else:
-            return Response({"error":"method not allowed"}, status=400)
+#         else:
+#             return Response({"error":"method not allowed"}, status=400)
             
         
